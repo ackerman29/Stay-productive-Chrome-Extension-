@@ -3,8 +3,11 @@
 
 # FEATURES #
 -> Easy Blocking: Quickly block the current website with a single click.
+
 -> Temporary Blocking: Initiate a temporary block that will fully activate after a short delay.
+
 -> Persistent Blocking: Blocks remain active for one day, ensuring that you stay focused and productive.
+
 -> Error Handling: Informative error messages if attempting to block unsupported URLs (e.g., Chrome internal pages).
 
 # SCREENSHOTS #

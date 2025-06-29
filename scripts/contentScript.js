@@ -2,14 +2,11 @@ function CloseTab() {
     alert("This URL is completely blocked for today. This tab will close after you press OK")
     chrome.runtime.sendMessage({ CloseMe: true })
 }
-
 chrome.runtime.onMessage.addListener((message, sender) => {
     if (message.from === "popup" && message.subject === "startTimer") {
-
         var hour = 0;
         var min = 0;
         var sec = 5;
-
         var div = document.createElement("div")
         div.innerHTML = `
             <div class="STAYPtopItem">

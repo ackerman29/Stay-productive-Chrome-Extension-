@@ -1,7 +1,60 @@
 function CloseTab() {
-    alert("This URL is completely blocked for today. This tab will close after you press OK")
-    chrome.runtime.sendMessage({ CloseMe: true })
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+    `;
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+    `;
+    popup.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h2 style="color: #ff4444; margin: 0 0 15px 0;">🚫 Site Blocked</h2>
+            <p style="color: #333; margin: 0; line-height: 1.5;">
+                This URL is completely blocked for today.<br>
+                This tab will close after you press OK.
+            </p>
+        </div>
+        <button id="closeTabBtn" style="
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        ">OK</button>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    document.getElementById('closeTabBtn').onclick = () => {
+        chrome.runtime.sendMessage({ CloseMe: true });
+    };
+    
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 }
+
+
 chrome.runtime.onMessage.addListener((message, sender) => {
     if (message.from === "popup" && message.subject === "startTimer") {
         var hour = 0;

@@ -25,7 +25,7 @@ function CloseTab() {
     `;
     popup.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h2 style="color: #ff4444; margin: 0 0 15px 0;">🚫 Site Blocked</h2>
+            <h2 style="color: #ff4444; margin: 0 0 15px 0;"> Site Blocked</h2>
             <p style="color: #333; margin: 0; line-height: 1.5;">
                 This URL is completely blocked for today.<br>
                 This tab will close after you press OK.
@@ -94,48 +94,95 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             </div>`;
         document.body.prepend(div)
 
-       setInterval(() => {
-    if (sec > 0) {
+       const timerInterval = setInterval(() => {
+    if (sec > 0)
+        {
         sec--;
-    } else if (min > 0) {
+        } 
+    else if (min > 0) 
+        {
         min--;
         sec = 59;
-    } else if (hour > 0) {
+        } 
+    else if (hour > 0) 
+        {
         hour--;
         min = 59;
         sec = 59;
-    } else {
-        CloseTab();
-        return;
+        } 
+    else 
+    {
+    clearInterval(timerInterval);
+     CloseTab();
+    return;
     }
-            document.getElementById("STAYPhour").innerText = ("0" + hour).slice(-2);
-            document.getElementById("STAYPmin").innerText = ("0" + min).slice(-2);
-            document.getElementById("STAYPsec").innerText = ("0" + sec).slice(-2);
+    document.getElementById("STAYPhour").innerText = ("0" + hour).slice(-2);
+    document.getElementById("STAYPmin").innerText = ("0" + min).slice(-2);
+    document.getElementById("STAYPsec").innerText = ("0" + sec).slice(-2);
         }, 1000);
 
     }
 })
+function isBlocked(blockedUrls, currentHostname) {
+    const currentTime = new Date().getTime();
+    console.log("Checking if blocked:", currentHostname);
+    console.log("Blocked URLs:", blockedUrls);
+    return blockedUrls.some(item => {
+        console.log("Checking item:", item);        
+        if (item.url === currentHostname && item.status === "BLOCKED" && currentTime < item.BlockTill) {
+            console.log("Exact match found for:", currentHostname);
+            return true;
+        }        
+        if (currentHostname.includes(item.url) && item.status === "BLOCKED" && currentTime < item.BlockTill) {
+            console.log("Partial match found for:", currentHostname, "with", item.url);
+            return true;
+        }        
+        if (item.mode === "Chill Mode" && currentHostname.endsWith('.edu') && item.status === "BLOCKED" && currentTime < item.BlockTill) {
+            console.log("EDU domain blocked in chill mode:", currentHostname);
+            return true;
+        }
+        
+        return false;
+    });
+}
 
 chrome.storage.local.get("BlockedUrls", (data) => {
+     console.log("Content script running on:", window.location.hostname);
+    console.log("Storage data:", data);
+    
     if (data.BlockedUrls !== undefined) {
-        const currentTime = new Date().getTime();
-                const blockedSite = data.BlockedUrls.find((e) => 
-            e.url === window.location.hostname && 
-            e.status === "BLOCKED" && 
-            currentTime < e.BlockTill
-        );
+        const currentHostname = window.location.hostname;
         
-        if (blockedSite) {
-            CloseTab();
-        } else {
+        if (isBlocked(data.BlockedUrls, currentHostname)) {
+            console.log("Site is blocked, showing black screen");
+            
+            document.documentElement.style.cssText = `
+                background: #000 !important;
+                overflow: hidden !important;
+            `;
+            document.body.style.cssText = `
+                background: #000 !important;
+                overflow: hidden !important;
+                visibility: hidden !important;
+            `;
+             setTimeout(() => {
+                document.body.style.visibility = 'visible';
+                CloseTab();
+            }, 100);
+        }
+        else 
+        {
+            console.log("Site is not blocked");
+            const currentTime = new Date().getTime();
             const activeBlocks = data.BlockedUrls.filter((e) => 
-                e.url !== window.location.hostname || 
-                (e.status === "BLOCKED" && currentTime < e.BlockTill)
+                e.status !== "BLOCKED" || currentTime < e.BlockTill
             );
             
             if (activeBlocks.length !== data.BlockedUrls.length) {
                 chrome.storage.local.set({ BlockedUrls: activeBlocks });
             }
         }
+    } else {
+        console.log("No blocked URLs found in storage");
     }
 })

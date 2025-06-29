@@ -69,18 +69,17 @@ document.getElementById("btn").addEventListener("click", () => {
                     });
 
                     setTimeout(() => {
-                        chrome.storge.local.get("BlockedUrls", (data) => {
+                        chrome.storage.local.get("BlockedUrls", (data) => {
                             data.BlockedUrls.forEach((e, index) => {
-                                if (e.url === WebsiteHostName && e.status === 'In_Progress') {
-                                    var arr = data.BlockedUrls.splice(index, 1);
-
-                                    var then = new Date();
-                                    then.setHours(24, 0, 0, 0);
-                                    const blockTill = then.getTime()
-
-                                    chrome.storage.local.set({ BlockedUrls: [...arr, { status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill }] })
-                                }
-                            })
+                            if (e.url === WebsiteHostName && e.status === 'In_Progress') {
+                            var then = new Date();
+                            then.setHours(24, 0, 0, 0);
+                            const blockTill = then.getTime();
+                            
+                            data.BlockedUrls[index] = { status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill };
+                            chrome.storage.local.set({ BlockedUrls: data.BlockedUrls });
+                        }
+                    })
                         })
 
 

@@ -41,14 +41,23 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             </div>`;
         document.body.prepend(div)
 
-        setInterval(() => {
-            if (sec >= 1) {
-                sec = sec - 1
-                document.getElementById("STAYPsec").innerText = ("0" + sec).slice(-2)
-            }
-            else {
-                CloseTab()
-            }
+       setInterval(() => {
+    if (sec > 0) {
+        sec--;
+    } else if (min > 0) {
+        min--;
+        sec = 59;
+    } else if (hour > 0) {
+        hour--;
+        min = 59;
+        sec = 59;
+    } else {
+        CloseTab();
+        return;
+    }
+            document.getElementById("STAYPhour").innerText = ("0" + hour).slice(-2);
+            document.getElementById("STAYPmin").innerText = ("0" + min).slice(-2);
+            document.getElementById("STAYPsec").innerText = ("0" + sec).slice(-2);
         }, 1000);
 
     }
@@ -56,8 +65,24 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
 chrome.storage.local.get("BlockedUrls", (data) => {
     if (data.BlockedUrls !== undefined) {
-        if (data.BlockedUrls.some((e) => e.url === window.location.hostname && e.status === "BLOCKED")) {
-            CloseTab()
+        const currentTime = new Date().getTime();
+                const blockedSite = data.BlockedUrls.find((e) => 
+            e.url === window.location.hostname && 
+            e.status === "BLOCKED" && 
+            currentTime < e.BlockTill
+        );
+        
+        if (blockedSite) {
+            CloseTab();
+        } else {
+            const activeBlocks = data.BlockedUrls.filter((e) => 
+                e.url !== window.location.hostname || 
+                (e.status === "BLOCKED" && currentTime < e.BlockTill)
+            );
+            
+            if (activeBlocks.length !== data.BlockedUrls.length) {
+                chrome.storage.local.set({ BlockedUrls: activeBlocks });
+            }
         }
     }
 })

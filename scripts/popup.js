@@ -7,8 +7,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
     document.getElementById("url").innerText = WebsiteHostName //for showing the url name
 })
-
-function ShowError(text) {
+// chrome url cannot be blocked function
+function ShowError(text) {    
     var div = document.createElement('div');
     div.setAttribute('id', 'ERRORcontainer');
     div.innerHTML = `

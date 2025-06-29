@@ -3,9 +3,14 @@
     "description": "Stay productive description",
     "version": "0.0.1",
     "manifest_version": 3,
-    "action": {
-        "default_popup": "./popup.html"
-    },
+    
+"action": {
+  "default_icon": {
+    "16": "icons/ext-icon.png",
+    "24": "icons/ext-icon.png",
+    "32": "icons/ext-icon.png"
+  }
+},
     "content_scripts": [
         {
             "matches": [

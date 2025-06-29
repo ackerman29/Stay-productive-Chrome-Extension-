@@ -1,119 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stay Productive</title>
     <style>
-        .container {
-            width: 400px;
-            max-height: 275px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
         }
-
-        .topItem {
-            height: 65%;
-        }
-
-        .topItem>h1 {
-            font-family: cursive;
+        
+        .header {
             text-align: center;
-            padding: 0;
-            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .url-display {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .mode-section {
+            margin-bottom: 20px;
+        }
+        
+        .mode-section h3 {
             margin-bottom: 10px;
-            color: rgb(48, 48, 48);
-            border-bottom: 2px solid rgb(225, 225, 225);
+            color: #333;
         }
-
-        .topItemMain {
+        
+        .mode-buttons {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-
-        .Info {
-            padding-left: 10px;
-        }
-
-        .Info>p {
-            color: rgb(104, 104, 104);
-            font-size: 12px;
-            padding: 0;
-            margin: 0;
-        }
-
-        .Info>h4 {
-            color: rgb(48, 48, 48);
-            font-size: 17px;
-            padding: 0;
-            margin: 0;
-        }
-
-        #btn {
-            color: rgb(241, 88, 88);
-            font-weight: bold;
-            font-size: 15px;
-            padding: 5px 10px;
-            background-color: rgb(252, 252, 252);
-            border: 1px solid black;
-            outline: none;
-        }
-
-        #btn:hover {
-            background-color: rgb(245, 245, 245);
+        
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-        }
-
-        #btn:active {
-            background-color: rgb(175, 175, 175);
-        }
-
-
-        .bottomItem {
-            height: 35%;
-            position: relative;
-        }
-
-        .ERROR {
-            padding-top: 5px;
-        }
-
-        .ERROR>p {
-            margin: 0;
-            font-size: 12px;
             font-weight: bold;
-            background: lightgray;
-            padding: 2px 0px;
+            transition: all 0.3s;
+        }
+        
+        #focusMode {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        #focusMode:hover {
+            background: #45a049;
+        }
+        
+        #chillMode {
+            background: #2196F3;
+            color: white;
+        }
+        
+        #chillMode:hover {
+            background: #1976D2;
+        }
+        
+        #btn {
+            background: #ff9800;
+            color: white;
+            width: 100%;
+        }
+        
+        #btn:hover {
+            background: #f57c00;
+        }
+        
+        #clearBlocks {
+            background: #f44336;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        #clearBlocks:hover {
+            background: #d32f2f;
+        }
+        
+        .individual-section {
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        
+        .bottomItem {
+            margin-top: 10px;
+        }
+        
+        .ERROR {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
             text-align: center;
+        }
+        
+        .mode-description {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-
-        <div class="topItem">
-
-            <h1>Stay Productive</h1>
-
-            <div class="topItemMain">
-                <div class="Info">
-                    <p>You are currently on :</p>
-                    <h4 id="url"></h4>
-                </div>
-                <button id="btn">BLOCK THIS URL</button>
-            </div>
-        </div>
-
-        <div class="bottomItem">
-        </div>
-
+    <div class="header">
+        <h2>Stay Productive</h2>
     </div>
+    
+    <div class="url-display">
+        <strong>Current Site:</strong>
+        <div id="url">Loading...</div>
+    </div>
+    
+    <div class="mode-section">
+        <h3>Quick Modes</h3>
+        
+        <div class="mode-description">
+            <strong>Focus Mode:</strong> Blocks social media & gaming sites
+        </div>
+        <div class="mode-description">
+            <strong>Chill Mode:</strong> Blocks work & educational sites
+        </div>
+        
+        <div class="mode-buttons">
+            <button id="focusMode">🎯 Focus Mode</button>
+            <button id="chillMode">😎 Chill Mode</button>
+        </div>
+        
+        <button id="clearBlocks">🗑️ Clear All Blocks</button>
+    </div>
+    
+    <div class="individual-section">
+        <h3>Block Individual Site</h3>
+        <button id="btn">Block This Website</button>
+        
+        <div class="bottomItem">
+            <!-- Error messages will appear here -->
+        </div>
+    </div>
+
+    <script src="./scripts/popup.js"></script>
 </body>
-<script src="./scripts/popup.js"></script>
 
 </html>
